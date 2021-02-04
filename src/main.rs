@@ -129,7 +129,8 @@ fn main() -> Result<()> {
     // Open a channel - None says let the library choose the channel ID.
     let channel = connection.open_channel(None)?;
 
-    // Passively declare the in_queue.
+    // Passively declare the in_queue (meaning the queue should already be
+    // declared/configured on the broker).
     let in_queue = channel.queue_declare_passive(IN_QUEUE)?;
 
     // Publish: Get a handle to the direct exchange on our channel.
@@ -137,7 +138,7 @@ fn main() -> Result<()> {
 
     // Start a consumer.
     let consumer = in_queue.consume(ConsumerOptions::default())?;
-    info!("Waiting for messages on q:{}/{}.", config.amqp_vhost, IN_QUEUE);
+    info!("Waiting for messages on q:{}/{} on {}.", config.amqp_vhost, IN_QUEUE, config.amqp_host);
     info!("Consumer tag is: {}", consumer.consumer_tag());
     info!("Press Ctrl-C to exit.");
 
