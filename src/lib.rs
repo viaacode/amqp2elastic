@@ -41,6 +41,14 @@ fn default_amqp_vhost() -> String  {
   String::from("")
 }
 
+fn default_file() -> String  {
+  String::from("n/a")
+}
+
+fn default_media_id() -> String  {
+  String::from("n/a")
+}
+
 
 #[derive(Serialize, Deserialize, Debug)]
 pub struct EssenceArchivedEvent {
@@ -220,6 +228,26 @@ pub struct MakeSubtitleAvailableRequest {
 }
 
 #[derive(Serialize, Deserialize, Debug)]
+pub struct TriggerExportRequest {
+    #[serde(skip_deserializing)]
+    event_name: String,
+    #[serde(alias = "timestamp")]
+    event_timestamp: String,
+    #[serde(skip_deserializing)]
+    event_handle_timestamp: String,
+    #[serde(alias = "mediaId", default = "default_media_id")]
+    media_id: String,
+    #[serde(default = "default_file")]
+    file: String,
+    #[serde(alias = "correlationId")]
+    correlation_id: String,
+    #[serde(skip_deserializing)]
+    event_payload: String,
+    #[serde(skip_deserializing)]
+    origin: String,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
 enum VrtEvent {
     EssenceArchivedEvent,
     EssenceLinkedEvent,
@@ -231,6 +259,7 @@ enum VrtEvent {
     ClosedOtAvailableEvent,
     OpenOtAvailableEvent,
     MakeSubtitleAvailableRequest,
+    TriggerExportRequest,
 }
 
 impl EssenceArchivedEvent {
@@ -422,6 +451,26 @@ impl MakeSubtitleAvailableRequest {
     }
 
 }
+
+impl TriggerExportRequest {
+
+    pub fn new(xml: Element, body: &str) -> TriggerExportRequest {
+        // Deserialize XML to struct
+        let mut event: TriggerExportRequest = serde_xml_rs::from_str(body).unwrap();
+        // Add in other properties
+        event.event_name = String::from(&xml.name);
+        event.event_payload = body.to_string();
+        event.event_handle_timestamp = Utc::now().to_rfc3339();
+        event.origin = Origin::Meemoo.to_str();
+        return event
+    }
+
+    pub fn to_json(&self) -> String {
+        serde_json::to_string(self).unwrap()
+    }
+
+}
+
 #[derive(Debug, Serialize, PartialEq)]
 pub enum Origin {
     Vrt,
