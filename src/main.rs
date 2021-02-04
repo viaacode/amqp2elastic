@@ -97,6 +97,13 @@ fn handle_xml(xml: Element, body: &str) -> Result<String, &'static str> {
             let j = event.to_json();
             Ok(j)
         },
+        "triggerExportResponse" => {
+            let event = TriggerExportResponse::new(xml, body);
+            debug!("{:?}", event);
+            // Serialize it to a JSON string
+            let j = event.to_json();
+            Ok(j)
+        },
         _ => {
             warn!("Unknown event type: {:#?}", root_tag);
             Err("Unknown event type")
