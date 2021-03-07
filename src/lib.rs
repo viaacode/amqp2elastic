@@ -486,6 +486,10 @@ impl TriggerExportRequest {
         serde_json::to_string(self).unwrap()
     }
 
+    pub fn correlation_id(&self) -> &str {
+        &self.correlation_id
+    }
+
 }
 
 impl TriggerExportResponse {
@@ -503,6 +507,10 @@ impl TriggerExportResponse {
 
     pub fn to_json(&self) -> String {
         serde_json::to_string(self).unwrap()
+    }
+
+    pub fn correlation_id(&self) -> &str {
+        &self.correlation_id
     }
 
 }
@@ -526,4 +534,55 @@ fn default_timestamp() -> String {
     // Issue bij VRT! -> VD-
     warn!("default_timestamp called!");
     Utc::now().to_rfc3339()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn test_origin_vrt() {
+        let a: String = Origin::Vrt.to_str();
+        assert_eq!(a.as_str(), "vrt")
+    }
+    #[test]
+    fn test_origin_meemoo() {
+        let a: String = Origin::Meemoo.to_str();
+        assert_eq!(a.as_str(), "meemoo")
+    }
+    #[test]
+    fn test_trigger_export_request() {
+        // Arrange
+        let body = r##"<triggerExportRequest>
+  <timestamp>2021-02-03T20:21:02,032132132+01:00</timestamp>
+  <correlationId>a1b2c3d4</correlationId>
+  <mediaId>AB00112233</mediaId>
+</triggerExportRequest>"##;
+        let xml = Element::parse(body.as_bytes()).unwrap();
+        // Act
+        let event = TriggerExportRequest::new(xml, body);
+        // Assert
+        assert_eq!(
+            event.correlation_id(), "a1b2c3d4",
+            "correlation_id was not `a1b2c3d4`, value was `{}`",
+            event.correlation_id()
+        )
+    }
+    #[test]
+    fn test_trigger_export_response() {
+        // Arrange
+        let body = r##"<triggerExportResponse>
+  <timestamp>2021-02-03T20:21:02,032132132+01:00</timestamp>
+  <correlationId>a1b2c3d4</correlationId>
+  <status>SUCCESS</status>
+</triggerExportResponse>"##;
+        let xml = Element::parse(body.as_bytes()).unwrap();
+        // Act
+        let event = TriggerExportResponse::new(xml, body);
+        // Assert
+        assert_eq!(
+            event.correlation_id(), "a1b2c3d4",
+            "correlation_id was not `a1b2c3d4`, value was `{}`",
+            event.correlation_id()
+        )
+    }
 }
