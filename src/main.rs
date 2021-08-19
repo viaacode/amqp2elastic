@@ -128,6 +128,9 @@ fn main() -> Result<()> {
 
     // Open a channel - None says let the library choose the channel ID.
     let channel = connection.open_channel(None)?;
+    // Set the prefetch count limit.
+    let prefetch_count = config.amqp_prefetch_count;
+    let _qos_result = channel.qos(0, prefetch_count, false);
 
     // Passively declare the in_queue (meaning the queue should already be
     // declared/configured on the broker).
