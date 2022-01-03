@@ -23,6 +23,8 @@ pub struct Config {
     pub amqp_port: String,
     #[serde(default="default_amqp_vhost")]
     pub amqp_vhost: String,
+    #[serde(default="default_amqp_prefetch_count")]
+    pub amqp_prefetch_count: u16,
 }
 
 fn default_amqp_up() -> String  {
@@ -39,6 +41,10 @@ fn default_amqp_port() -> String  {
 
 fn default_amqp_vhost() -> String  {
   String::from("")
+}
+
+fn default_amqp_prefetch_count() -> u16  {
+  100
 }
 
 fn default_file() -> String  {
