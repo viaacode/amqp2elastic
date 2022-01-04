@@ -1,5 +1,3 @@
-[![codecov](https://codecov.io/gh/maartends/amqp2elastic/branch/main/graph/badge.svg?token=3WAMVA4CK5)](https://codecov.io/gh/maartends/amqp2elastic)
-
 # Amqp2Elastic
 
 ## Prerequisites
