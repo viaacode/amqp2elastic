@@ -12,10 +12,11 @@ your `PATH`.)
 ## Usage
 
 - Clone this repository.
-- Fill in and source an `.env` file (Example in `.env.example`):
+- Fill in and export the variables in a `.env` file (Example in
+  `.env.example`):
 
 ```bash
-$ export $(cat .env.qas | xargs)
+$ export $(grep -v '^#' .env | xargs)
 ```
 
 - Run the tests with `cargo test`.
