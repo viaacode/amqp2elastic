@@ -1,5 +1,9 @@
 # Amqp2Elastic
 
+Reads events from VRT as XML from a RabbitMQ-queue (`vrt2elk_events_xml_q`),
+transforms them to JSON and sends them to ELK via the RabbitMQ-queue
+`vrt2elk_events_json_q`.
+
 ## Prerequisites
 
 - Rust toolchain: see [https://www.rust-lang.org/tools/install](https://www.rust-lang.org/tools/install).
