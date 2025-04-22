@@ -21,3 +21,8 @@ $ export $(grep -v '^#' .env | xargs)
 
 - Run the tests with `cargo test`.
 - Run with `cargo run`.
+- Or, export env-vars and run in one go:
+
+```bash
+$ export $(grep -v '^#' .env | xargs); ./amqp2elastic
+```
